@@ -2,7 +2,6 @@
 
 set -euo pipefail
 
-# TODO: Ensure this is the correct GitHub homepage where releases can be downloaded for headlamp.
 GH_REPO="https://github.com/zmjolk/asdf-headlamp"
 TOOL_NAME="headlamp"
 TOOL_TEST="headlamp --version"
