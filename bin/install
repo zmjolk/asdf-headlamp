@@ -1,0 +1,77 @@
+#!/usr/bin/env bash
+
+set -e
+set -o pipefail
+# set -x
+
+ASDF_INSTALL_TYPE=${ASDF_INSTALL_TYPE:-version}
+[ -n "$ASDF_INSTALL_VERSION" ] || (echo >&2 'Missing ASDF_INSTALL_VERSION' && exit 1)
+[ -n "$ASDF_INSTALL_PATH" ] || (echo >&2 'Missing ASDF_INSTALL_PATH' && exit 1)
+
+install_plugin() {
+	local install_type=$1
+	local version=$2
+	local install_path=$3
+	local download_url="$(get_download_url $install_type $version)"
+	local tmp_download_file=$(mktemp)
+
+	local bin_install_path="$install_path/bin"
+	mkdir -p "${bin_install_path}"
+
+	echo "Downloading tilt from $download_url"
+	curl -L -s "$download_url" -o "$tmp_download_file"
+	pushd $bin_install_path >/dev/null
+	tar zxf "$tmp_download_file" || exit 1
+	popd >/dev/null
+}
+
+get_platform() {
+	[ "Linux" = "$(uname)" ] && echo "linux" || echo "mac"
+}
+
+get_arch() {
+	local arch=$(uname -m)
+	case $arch in
+	amd64 | x86_64)
+		echo "x64"
+		;;
+	arm64 | aarch64)
+		echo "arm64"
+		;;
+	arm)
+		echo "arm"
+		;;
+	*)
+		echo "i386"
+		;;
+	esac
+}
+
+get_download_url() {
+	local install_type=$1
+	local tag=$2
+	local version=$2
+
+	local platform=$(get_platform)
+	local arch=$(get_arch)
+	local extra=""
+
+	# arm64 builds may have _ALPHA prepended to them
+	# the last alpha release was v0.22.14
+	# https://github.com/tilt-dev/tilt/pull/5078
+	if [ "$arch" == "arm64" ] && [ "$(printf '%s\n' "0.22.14" "$version" | sort -V | head -n1)" == "$version" ]; then
+		extra="_ALPHA"
+	fi
+
+	# HACK: asdf wants numeric version numbers, but most start with a "v"
+	# since people usually tag releases in GitHub with a vX.X.X and _not_ X.X.X
+	# so need to prefix version based on this fragile logic :-/
+	# in case the version is in some other format such as FOOBAR.X.X.X
+	if [[ "$tag" =~ ^[0-9] ]]; then
+		tag="v${tag}"
+	fi
+
+	echo "https://github.com/kubernetes-sigs/headlamp/releases/download/${tag}/Headlamp-${version}-${platform}-${arch}.tar.gz"
+}
+
+install_plugin "$ASDF_INSTALL_TYPE" "$ASDF_INSTALL_VERSION" "$ASDF_INSTALL_PATH"
