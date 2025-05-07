@@ -5,8 +5,8 @@ set -o pipefail
 # set -x
 
 ASDF_INSTALL_TYPE=${ASDF_INSTALL_TYPE:-version}
-[ -n "$ASDF_INSTALL_VERSION" ] || (echo >&2 'Missing ASDF_INSTALL_VERSION' && exit 1)
-[ -n "$ASDF_INSTALL_PATH" ] || (echo >&2 'Missing ASDF_INSTALL_PATH' && exit 1)
+[ -n "$ASDF_INSTALL_VERSION" ] || (printf >&2 'Missing ASDF_INSTALL_VERSION\n' && exit 1)
+[ -n "$ASDF_INSTALL_PATH" ] || (printf >&2 'Missing ASDF_INSTALL_PATH\n' && exit 1)
 
 install_plugin() {
 	local install_type=$1
@@ -18,10 +18,10 @@ install_plugin() {
 	local bin_install_path="$install_path/bin"
 	mkdir -p "${bin_install_path}"
 
-	echo "Downloading headlamp from $download_url"
+	printf "Downloading headlamp from $download_url\n"
 	curl -L -s "$download_url" -o "$tmp_download_file"
 	pushd $bin_install_path >/dev/null
-	echo "Extracting headlamp files"
+	printf "Extracting headlamp files\n"
 	tar zxf "$tmp_download_file" --strip-components=1 || exit 1
 	sudo chmod 4755 "${bin_install_path}/chrome-sandbox"
 	sudo chown root:root "${bin_install_path}/chrome-sandbox"
@@ -36,16 +36,16 @@ get_arch() {
 	local arch=$(uname -m)
 	case $arch in
 	amd64 | x86_64)
-		echo "x64"
+		printf "x64\n"
 		;;
 	arm64 | aarch64)
-		echo "arm64"
+		printf "arm64\n"
 		;;
 	arm)
-		echo "arm"
+		printf "arm\n"
 		;;
 	*)
-		echo "i386"
+		printf "i386\n"
 		;;
 	esac
 }
@@ -63,7 +63,7 @@ get_download_url() {
 		tag="v${tag}"
 	fi
 
-	echo "https://github.com/kubernetes-sigs/headlamp/releases/download/${tag}/Headlamp-${version}-${platform}-${arch}.tar.gz"
+	printf "https://github.com/kubernetes-sigs/headlamp/releases/download/${tag}/Headlamp-${version}-${platform}-${arch}.tar.gz\n"
 }
 
 install_plugin "$ASDF_INSTALL_TYPE" "$ASDF_INSTALL_VERSION" "$ASDF_INSTALL_PATH"
