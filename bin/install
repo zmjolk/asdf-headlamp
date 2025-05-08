@@ -13,6 +13,7 @@ install_plugin() {
 	local version=$2
 	local install_path=$3
 	local download_url="$(get_download_url $install_type $version)"
+	local platform=$(get_platform)
 	local tmp_download_file=$(mktemp)
 
 	local bin_install_path="$install_path/bin"
@@ -20,16 +21,30 @@ install_plugin() {
 
 	printf "Downloading headlamp from $download_url\n"
 	curl -L -s "$download_url" -o "$tmp_download_file"
-	pushd $bin_install_path >/dev/null
-	printf "Extracting headlamp files\n"
-	tar zxf "$tmp_download_file" --strip-components=1 || exit 1
-	sudo chown root:root "${bin_install_path}/chrome-sandbox"
-	sudo chmod 4755 "${bin_install_path}/chrome-sandbox"
-	popd >/dev/null
+
+    if [[ "$platform" == "linux" ]]; then
+        pushd $bin_install_path >/dev/null
+        printf "Extracting headlamp files\n"
+        tar zxf "$tmp_download_file" --strip-components=1 || exit 1
+        sudo chown root:root "${bin_install_path}/chrome-sandbox"
+        sudo chmod 4755 "${bin_install_path}/chrome-sandbox"
+        popd >/dev/null
+
+    elif [[ "$platform" == "mac" ]]; then
+        # Create a mount point
+        local mount_point=$(mktemp -d /Volumes/headlamp-mount-XXXX)
+        printf "Mounting DMG...\n"
+        hdiutil attach "$tmp_download_file" -mountpoint "$mount_point" -nobrowse -quiet
+		cp -R "${mount_path}/Headlamp.app" "$bin_install_path/"
+		printf "Copied Headlamp.app to $bin_install_path\n"
+		# Unmount the DMG
+		printf "Unmounting DMG...\n"
+		hdiutil detach "$mount_point" -quiet
+	fi
 }
 
 get_platform() {
-	[ "Linux" = "$(uname)" ] && echo "linux" || echo "mac"
+	[ "Linux" = "$(uname)" ] && printf "linux" || printf "mac"
 }
 
 get_arch() {
@@ -57,13 +72,21 @@ get_download_url() {
 
 	local platform=$(get_platform)
 	local arch=$(get_arch)
-	local extra=""
+
+	if [[ "$platform" == "linux" ]]; then
+		file_type="tar.gz"
+	elif [[ "$platform" == "mac" ]]; then
+		file_type="dmg"
+	else
+		printf >&2 "Unsupported platform: $platform\n"
+		exit 1
+	fi
 
 	if [[ "$tag" =~ ^[0-9] ]]; then
 		tag="v${tag}"
 	fi
 
-	printf "https://github.com/kubernetes-sigs/headlamp/releases/download/${tag}/Headlamp-${version}-${platform}-${arch}.tar.gz\n"
+	printf "https://github.com/kubernetes-sigs/headlamp/releases/download/${tag}/Headlamp-${version}-${platform}-${arch}.${file_type}\n"
 }
 
 install_plugin "$ASDF_INSTALL_TYPE" "$ASDF_INSTALL_VERSION" "$ASDF_INSTALL_PATH"
