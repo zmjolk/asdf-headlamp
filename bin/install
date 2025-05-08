@@ -32,11 +32,19 @@ install_plugin() {
 		mount_path="/Volumes/headlamp"
         printf "Mounting DMG...\n"
         hdiutil attach "$tmp_download_file" -mountpoint "$mount_path" -nobrowse -quiet -noverify -noautoopen
+
 		cp -R "${mount_path}/Headlamp.app" "$bin_install_path/"
 		printf "Copied Headlamp.app to $bin_install_path\n"
-		# Unmount the DMG
+
 		printf "Unmounting DMG...\n"
-		# hdiutil detach "$mount_path" -quiet
+		hdiutil detach "$mount_path" -quiet
+
+		# Create shim for shim
+			cat <<-EOF > "${bin_install_path}/headlamp"
+		#!/bin/bash
+		open -n ./Headlamp.app
+		EOF
+		chmod +x "${bin_install_path}/headlamp"
 	fi
 }
 
