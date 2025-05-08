@@ -36,7 +36,7 @@ install_plugin() {
 		printf "Copied Headlamp.app to $bin_install_path\n"
 		# Unmount the DMG
 		printf "Unmounting DMG...\n"
-		hdiutil detach "$mount_path" -quiet
+		# hdiutil detach "$mount_path" -quiet
 	fi
 }
 
