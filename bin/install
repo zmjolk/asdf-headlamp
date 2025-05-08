@@ -30,13 +30,11 @@ install_plugin() {
 
 	elif [[ "$platform" == "mac" ]]; then
 		mount_path="/Volumes/headlamp"
-		printf "Mounting DMG...\n"
+		printf "Mounting Headlamp DMG\n"
 		hdiutil attach "$tmp_download_file" -mountpoint "$mount_path" -nobrowse -quiet -noverify -noautoopen -noautofsck
 
 		cp -R "${mount_path}/Headlamp.app" "$bin_install_path/"
 		printf "Copied Headlamp.app to $bin_install_path\n"
-
-		printf "Unmounting DMG...\n"
 		hdiutil detach "$mount_path" -quiet
 
 		# Create shim for shim
