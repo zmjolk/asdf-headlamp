@@ -31,15 +31,13 @@ install_plugin() {
         popd >/dev/null
 
     elif [[ "$platform" == "mac" ]]; then
-        # Create a mount point
-        local mount_point=$(mktemp -d /Volumes/headlamp-mount-XXXX)
         printf "Mounting DMG...\n"
-        hdiutil attach "$tmp_download_file" -mountpoint "$mount_point" -nobrowse -quiet
+        hdiutil attach "$tmp_download_file" -mountpoint "/Volumes/headlamp" -nobrowse -quiet
 		cp -R "${mount_path}/Headlamp.app" "$bin_install_path/"
 		printf "Copied Headlamp.app to $bin_install_path\n"
 		# Unmount the DMG
 		printf "Unmounting DMG...\n"
-		hdiutil detach "$mount_point" -quiet
+		hdiutil detach "/Volumes/headlamp" -quiet
 	fi
 }
 
