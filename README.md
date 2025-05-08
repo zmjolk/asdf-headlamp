@@ -2,7 +2,7 @@
 
 # asdf-headlamp [![Build](https://github.com/zmjolk/asdf-headlamp/actions/workflows/build.yml/badge.svg)](https://github.com/zmjolk/asdf-headlamp/actions/workflows/build.yml) [![Lint](https://github.com/zmjolk/asdf-headlamp/actions/workflows/lint.yml/badge.svg)](https://github.com/zmjolk/asdf-headlamp/actions/workflows/lint.yml)
 
-[headlamp](https://github.com/zmjolk/asdf-headlamp) plugin for the [asdf version manager](https://asdf-vm.com).
+[headlamp](https://headlamp.dev/) plugin for the [asdf version manager](https://asdf-vm.com).
 
 </div>
 
@@ -15,17 +15,14 @@
 
 # Dependencies
 
-**TODO: adapt this section**
-
 - `bash`, `curl`, `tar`, and [POSIX utilities](https://pubs.opengroup.org/onlinepubs/9699919799/idx/utilities.html).
-- `SOME_ENV_VAR`: set this environment variable in your shell config to load the correct version of tool x.
 
 # Install
 
 Plugin:
 
 ```shell
-asdf plugin add headlamp
+asdf plugin add headlamp # not on shortname listing yet
 # or
 asdf plugin add headlamp https://github.com/zmjolk/asdf-headlamp.git
 ```
