@@ -4,6 +4,10 @@
 
 [headlamp](https://headlamp.dev/) plugin for the [asdf version manager](https://asdf-vm.com).
 
+Tested against
+- linux x86_64
+- mac x86_64 | arm64
+
 </div>
 
 # Contents
