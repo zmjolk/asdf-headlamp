@@ -23,17 +23,15 @@ install_plugin() {
 	curl -L -s "$download_url" -o "$tmp_download_file"
 
     if [[ "$platform" == "linux" ]]; then
-        pushd $bin_install_path >/dev/null
         printf "Extracting headlamp files\n"
         tar zxf "$tmp_download_file" --strip-components=1 || exit 1
         sudo chown root:root "${bin_install_path}/chrome-sandbox"
         sudo chmod 4755 "${bin_install_path}/chrome-sandbox"
-        popd >/dev/null
 
     elif [[ "$platform" == "mac" ]]; then
 		mount_path="/Volumes/headlamp"
         printf "Mounting DMG...\n"
-        hdiutil attach "$tmp_download_file" -mountpoint "$mount_path" -nobrowse -quiet
+        hdiutil attach "$tmp_download_file" -mountpoint "$mount_path" -nobrowse -quiet -noverify -noautoopen
 		cp -R "${mount_path}/Headlamp.app" "$bin_install_path/"
 		printf "Copied Headlamp.app to $bin_install_path\n"
 		# Unmount the DMG
