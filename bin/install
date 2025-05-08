@@ -42,8 +42,9 @@ install_plugin() {
 		# Create shim for shim
 		cat <<-EOF >"${bin_install_path}/headlamp"
 			#!/bin/bash
+			echo "opening headlamp at ${bin_install_path}"
 			cd "${bin_install_path}"
-			open -n ./Headlamp.app $@
+			open -n ./Headlamp.app
 		EOF
 		chmod +x "${bin_install_path}/headlamp"
 	fi
