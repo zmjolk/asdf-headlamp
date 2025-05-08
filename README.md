@@ -1,6 +1,6 @@
 <div align="center">
 
-# asdf-headlamp [![Build](https://github.com/zmjolk/asdf-headlamp/actions/workflows/build.yml/badge.svg)](https://github.com/zmjolk/asdf-headlamp/actions/workflows/build.yml) [![Lint](https://github.com/zmjolk/asdf-headlamp/actions/workflows/lint.yml/badge.svg)](https://github.com/zmjolk/asdf-headlamp/actions/workflows/lint.yml)
+<!-- # asdf-headlamp [![Build](https://github.com/zmjolk/asdf-headlamp/actions/workflows/build.yml/badge.svg)](https://github.com/zmjolk/asdf-headlamp/actions/workflows/build.yml) [![Lint](https://github.com/zmjolk/asdf-headlamp/actions/workflows/lint.yml/badge.svg)](https://github.com/zmjolk/asdf-headlamp/actions/workflows/lint.yml) -->
 
 [headlamp](https://headlamp.dev/) plugin for the [asdf version manager](https://asdf-vm.com).
 
