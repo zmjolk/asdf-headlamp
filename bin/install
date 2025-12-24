@@ -31,7 +31,7 @@ install_plugin() {
 		tar zxf "$tmp_download_file" --strip-components=1 -C "$tmp_extract_dir" || exit 1
 		chown $(id -u):$(id -g) "${tmp_extract_dir}/chrome-sandbox"
 		chmod 4755 "${tmp_extract_dir}/chrome-sandbox"
-		mv "$tmp_extract_dir/chrome-sandbox" "$bin_install_path/chrome-sandbox"
+		mv "$tmp_extract_dir"/* "$bin_install_path/"
 
 	elif [[ "$platform" == "mac" ]]; then
 		mount_path="/Volumes/headlamp"
