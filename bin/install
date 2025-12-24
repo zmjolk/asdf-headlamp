@@ -24,10 +24,14 @@ install_plugin() {
 
 	if [[ "$platform" == "linux" ]]; then
 		printf "Extracting headlamp files\n"
-		
-		tar zxf "$tmp_download_file" --strip-components=1  -C "$bin_install_path" || exit 1
-		sudo chown root:root "${bin_install_path}/chrome-sandbox"
-		sudo chmod 4755 "${bin_install_path}/chrome-sandbox"
+
+		tmp_extract_dir=$(mktemp -d)
+		trap 'rm -rf "$tmp_extract_dir"' EXIT
+
+		tar zxf "$tmp_download_file" --strip-components=1 -C "$tmp_extract_dir" || exit 1
+		chown root:root "${tmp_extract_dir}/chrome-sandbox"
+		chmod 4755 "${tmp_extract_dir}/chrome-sandbox"
+		mv "$tmp_extract_dir/chrome-sandbox" "$bin_install_path/chrome-sandbox"
 
 	elif [[ "$platform" == "mac" ]]; then
 		mount_path="/Volumes/headlamp"
